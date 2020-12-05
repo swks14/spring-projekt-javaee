@@ -1,9 +1,8 @@
 package net.projekt.springboot.service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.stream.Collectors;
-
+import net.projekt.springboot.model.Role;
+import net.projekt.springboot.model.User;
+import net.projekt.springboot.repository.UserRepository;
 import net.projekt.springboot.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,9 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import net.projekt.springboot.model.Role;
-import net.projekt.springboot.model.User;
-import net.projekt.springboot.repository.UserRepository;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -32,8 +31,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User save(UserRegistrationDto registrationDto) {
-		User user = new User(registrationDto.getFirstName(), 
-				registrationDto.getLastName(), registrationDto.getEmail(),
+		User user = new User(registrationDto.getFirstName(),
+				registrationDto.getLastName(), registrationDto.getEmail(), registrationDto.getCountry(), registrationDto.getUsername(),
 				passwordEncoder.encode(registrationDto.getPassword()), Arrays.asList(new Role("ROLE_USER")));
 		
 		return userRepository.save(user);

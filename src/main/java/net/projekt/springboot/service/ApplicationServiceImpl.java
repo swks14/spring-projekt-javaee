@@ -1,13 +1,13 @@
 package net.projekt.springboot.service;
 
 
-import java.util.List;
-import java.util.Optional;
-
 import net.projekt.springboot.model.Application;
 import net.projekt.springboot.repository.ApplicationRepository;
 import net.projekt.springboot.web.dto.ApplicationDto;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService{
@@ -22,7 +22,7 @@ public class ApplicationServiceImpl implements ApplicationService{
 
     @Override
     public Application save(ApplicationDto applicationDto) {
-        Application application = new Application(applicationDto.getName(),applicationDto.getDomain(),applicationDto.getVersion());
+        Application application = new Application(applicationDto.getName(), applicationDto.getDomain());
 
         return applicationRepository.save(application);
     }
@@ -40,9 +40,13 @@ public class ApplicationServiceImpl implements ApplicationService{
         return applicationRepository.findById(id);
 
     }
+
     @Override
     public void deleteById(Long id) {
         applicationRepository.deleteById(id);
     }
 
+
 }
+
+
