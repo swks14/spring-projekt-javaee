@@ -1,6 +1,6 @@
 package net.projekt.springboot.web;
 
-import net.projekt.springboot.service.UserService;
+import net.projekt.springboot.service.UserServiceImpl;
 import net.projekt.springboot.web.dto.UserRegistrationDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,18 +16,18 @@ import java.io.IOException;
 @RequestMapping("/registration")
 public class UserRegistrationController {
 
-	private UserService userService;
+	private UserServiceImpl userService;
 
-	public UserRegistrationController(UserService userService) {
+	public UserRegistrationController(UserServiceImpl userService) {
 		super();
 		this.userService = userService;
 	}
-	
+
 	@ModelAttribute("user")
-    public UserRegistrationDto userRegistrationDto() {
-        return new UserRegistrationDto();
-    }
-	
+	public UserRegistrationDto userRegistrationDto() {
+		return new UserRegistrationDto();
+	}
+
 	@GetMapping
 	public String showRegistrationForm() {
 		String line;

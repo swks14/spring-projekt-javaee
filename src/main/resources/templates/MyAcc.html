@@ -3,13 +3,12 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
-    <title>My Account</title>
+    <title>Moje konto</title>
 
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
-
 </head>
 <body>
 <!-- create navigation bar ( header) -->
@@ -39,11 +38,11 @@
 
 <div class="container">
     <h1>Moje konto:</h1>
-    Witaj <span sec:authentication="principal.username"> User</span>
-    <span>Chcesz usun?? konto? <a href="/" th:href="@{/accdelete}">Kliknij tu</a></span>
-    <br>
-    <span>Chcesz edytowac konto? <a href="/" th:href="@{/accedit}">Kliknij tu</a></span>
-
+    <!--    Witaj <span sec:authentication="principal.getUsername()"> User</span>-->
+    <span>Chcesz usunąć konto? <a href="/" th:href="@{/accdelete}">Kliknij tu</a></span><br>
+    <span>Chcesz edytowac konto? <a href="/" th:href="@{/accedit}">Kliknij tu</a></span><br>
+    <span>Pokaz wszystkie konta <a href="/" th:href="@{/allacc}">Kliknij tu</a></span>
+    <span>Znajdz uzytkownikow aplikacji <a href="/" th:href="@{/accfromapp}">Kliknij tu</a></span>
 </div>
 </body>
 </html>

@@ -46,19 +46,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					"/h2-console/**",
 				"/h2-console**").permitAll()
 		.anyRequest().authenticated()
-		.and()
-		.formLogin()
-		.loginPage("/login")
-		.permitAll()
-		.and()
-		.logout()
-		.invalidateHttpSession(true)
-		.clearAuthentication(true)
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		.logoutSuccessUrl("/login?logout")
-		.permitAll();
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.permitAll()
+				.and()
+				.logout()
+				.invalidateHttpSession(true)
+				.clearAuthentication(true)
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessUrl("/login?logout")
+				.permitAll()
+				.and().httpBasic();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
+
 	}
 
 }

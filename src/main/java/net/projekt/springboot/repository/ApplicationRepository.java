@@ -20,5 +20,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Application findByName(String name);
 
     List<Application> findAllByUserIdContains(User user);
+
 }
 

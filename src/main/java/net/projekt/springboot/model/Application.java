@@ -1,16 +1,22 @@
 package net.projekt.springboot.model;
 
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data @NoArgsConstructor
-@Table(name =  "application")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "application")
 public class Application {
 
     @Id
@@ -21,8 +27,8 @@ public class Application {
 
     private String domain;
 
-
-    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_apps",
             joinColumns = @JoinColumn(
@@ -34,5 +40,15 @@ public class Application {
     public Application(String name, String domain) {
         this.name = name;
         this.domain = domain;
+    }
+
+    @Override
+    public String toString() {
+        return "Application{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", domain='" + domain + '\'' +
+                ", users=" + userId.size() +
+                '}';
     }
 }

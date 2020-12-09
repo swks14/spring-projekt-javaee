@@ -1,7 +1,10 @@
 package net.projekt.springboot.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -9,8 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data @NoArgsConstructor
-@Table(name =  "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 	
 	@Id
@@ -40,6 +46,7 @@ public class User {
 					name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
 
+	@JsonBackReference
 	@ManyToMany(mappedBy = "userId", cascade = CascadeType.ALL)
 	private Set<Application> appId = new HashSet<>();
 

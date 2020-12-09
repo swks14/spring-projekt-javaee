@@ -4,6 +4,7 @@ package net.projekt.springboot.service;
 import net.projekt.springboot.model.Application;
 import net.projekt.springboot.repository.ApplicationRepository;
 import net.projekt.springboot.web.dto.ApplicationDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService{
-
+    @Autowired
     private ApplicationRepository applicationRepository;
 
 
