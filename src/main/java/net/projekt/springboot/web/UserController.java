@@ -1,30 +1,39 @@
 package net.projekt.springboot.web;
 
-import lombok.Data;
+import net.projekt.springboot.Exceptions.NotFoundException;
+import net.projekt.springboot.model.Role;
 import net.projekt.springboot.model.User;
 import net.projekt.springboot.repository.ApplicationRepository;
 import net.projekt.springboot.repository.UserRepository;
+import net.projekt.springboot.service.UserServiceImpl;
+import net.projekt.springboot.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Data
+
 @Controller
 public class UserController {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    ApplicationRepository applicationRepository;
+    private ApplicationRepository applicationRepository;
+    @Autowired
+    private UserServiceImpl userService;
+    private List<User> users = new ArrayList<>();
+
 
     @GetMapping("/accdelete")
-    public String application() {
+    public String applicationDelete() {
         return "AccDelete";
     }
 
@@ -34,14 +43,38 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping("/accupdate")
+    public String applicationUpdate(@Valid Model model) {
+        model.addAttribute("user", new User());
+        return "AccEdit";
+    }
+
+    @RequestMapping(value = "/accupdate", method = RequestMethod.POST)
+    public String updateUser(@ModelAttribute("user") @Valid UserRegistrationDto NewUser, Principal principal) {
+        userRepository.findById(userRepository.findByEmail(principal.getName()).getId())
+                .map(user -> {
+                    user.setFirstName(NewUser.getFirstName());
+                    user.setLastName(NewUser.getLastName());
+                    user.setEmail(NewUser.getEmail());
+                    user.setCountry(NewUser.getCountry());
+                    user.setUsername(NewUser.getUsername());
+                    user.setPassword(NewUser.getPassword());
+                    user.setRoles(Arrays.asList(new Role("ROLE_USER")));
+                    userRepository.save(user);
+                    return "redirect:/logout";
+                })
+                .orElseGet(() -> "redirect:/logout");
+        return "redirect:/logout";
+    }
+
     @GetMapping("/myacc")
     public String Myacc() {
         return "MyAcc";
     }
 
     @GetMapping("/allacc")
-    public String application(Model model) {
-        List<User> users = userRepository.findAll();
+    public String application(@Valid Model model) {
+        users = userRepository.findAll();
         model.addAttribute("users", users);
         return "AllAcc";
     }
@@ -52,9 +85,19 @@ public class UserController {
     }
 
     @RequestMapping(value = "/accfromapp", method = RequestMethod.POST)
-    public String ShowUsersFromApp(@RequestParam Long id, Model model) {
-        model.addAttribute(userRepository.findAllByAppIdContains(applicationRepository.findById(id).orElse(null)));
+    public String ShowUsersFromApp(@RequestParam Long id, @Valid Model model) {
+        model.addAttribute(userRepository.findAllByAppIdContains(applicationRepository.findById(id).orElseThrow(() -> new NotFoundException(id))));
 
         return "redirect:/application";
+    }
+
+    @PostMapping("/allacc/tocsv")
+    public String accountsToCsv() throws IOException {
+        FileWriter f = new FileWriter("users.csv");
+        for (User user : users) {
+            f.write("\n" + user.toString());
+        }
+        f.close();
+        return "redirect:/allacc";
     }
 }

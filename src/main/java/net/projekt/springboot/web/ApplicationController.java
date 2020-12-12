@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +43,16 @@ public class ApplicationController {
         return "Applications";
     }
 
+    @GetMapping("/application/all")
+    public String allApplication(@Valid Model model, Principal principal) {
+        applications = applicationRepository.findAll();
+        model.addAttribute("applications", applications);
+        return "AllApplications";
+    }
+
 
     @GetMapping("/application/add")
-    public String AddingApplication(Model model) {
+    public String AddingApplication(@Valid Model model) {
         model.addAttribute("application", new Application());
         return "ApplicationForm";
     }
@@ -53,11 +63,17 @@ public class ApplicationController {
     }
 
     @PostMapping("/application/add")
-    public String AddApplication(@ModelAttribute("application") ApplicationDto applicationDto, Principal principal) {
+    public String AddApplication(@ModelAttribute("application") @Valid ApplicationDto applicationDto, Principal principal) {
         Application application = new Application(applicationDto.getName(), applicationDto.getDomain());
-        System.out.println("cipa");
         application.getUserId().add(userRepository.findByEmail(principal.getName()));
-        System.out.println("cipa2");
+        applicationRepository.save(application);
+        return "redirect:/application";
+    }
+
+    @RequestMapping(value = "/application/addexisting", method = RequestMethod.POST)
+    public String AddExistingApplication(@RequestParam Long id, Principal principal) {
+        Application application = applicationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        application.getUserId().add(userRepository.findByEmail(principal.getName()));
         applicationRepository.save(application);
         return "redirect:/application";
     }
@@ -68,25 +84,21 @@ public class ApplicationController {
     }
 
     @RequestMapping(value = "/application/delete", method = RequestMethod.POST)
-    public String DeleteApplication(@RequestParam Long id, Principal principal) {
-//        Long idToPersist = userRepository.findByEmail(principal.getName()).getId();
-//        userRepository.findByEmail(principal.getName()).setId(null);
+    public String DeleteApplication(@RequestParam Long id) {
         Application app = applicationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        app.getUserId().remove(userRepository.findByEmail(principal.getName()));
+        app.getUserId().clear();
         applicationRepository.deleteById(id);
-//        userRepository.findByEmail(principal.getName()).setId(idToPersist);
-
         return "redirect:/application";
     }
 
     @GetMapping("/application/update")
-    public String UpdateingApplication(Model model) {
+    public String UpdatingApplication(@Valid Model model) {
         model.addAttribute("application", new Application());
         return "ApplicationUpdateForm";
     }
 
     @RequestMapping(value = "/application/update", method = RequestMethod.POST)
-    public String updateApplication(@ModelAttribute("application") ApplicationDto NewApplication, @RequestParam Long id) {
+    public String updateApplication(@ModelAttribute("application") @Valid ApplicationDto NewApplication, @RequestParam Long id) {
         applicationService.findById(id)
                 .map(application -> {
                     application.setName(NewApplication.getName());
@@ -95,6 +107,16 @@ public class ApplicationController {
                     return "redirect:/application";
                 })
                 .orElseGet(() -> "redirect:/application");
+        return "redirect:/application";
+    }
+
+    @PostMapping("/apps/tocsv")
+    public String appsToCsv() throws IOException {
+        FileWriter f = new FileWriter("apps.csv");
+        for (Application application : applications) {
+            f.write("\n" + application.toString());
+        }
+        f.close();
         return "redirect:/application";
     }
 }

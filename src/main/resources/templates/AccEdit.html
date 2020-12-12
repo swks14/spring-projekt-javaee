@@ -1,10 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="ISO-8859-1">
+    <title>Edycja Konta</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
 </head>
 <body>
 
+<!-- create navigation bar ( header) -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/}">Strona glowna</a>
+        </div>
+        <div id="mainNavbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/application}">Aplikacje</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/myacc}">Moje konto</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br>
+<br>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/myacc}">Panel zarządzania kontami</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/accdelete}">Usuwanie konta</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/accupdate}">Edytowanie konta</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/allacc}">Pokaz wszystkie konta</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/accfromapp}">Znajdz uzytkownikow aplikacji</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Create HTML registration form -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <h1>Edytuj Konto</h1>
+
+            <form th:action="@{/accupdate}" method="post" th:object="${user}">
+                <div class="form-group">
+                    <label class="control-label" for="firstName"> Imie</label>
+                    <input id="firstName" class="form-control" th:field="*{firstName}"
+                           required autofocus="autofocus"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="lastName">Nazwisko</label> <input
+                        id="lastName" class="form-control" th:field="*{lastName}"
+                        required autofocus="autofocus"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="email">Email</label> <input
+                        id="email" class="form-control" th:field="*{email}"
+                        required autofocus="autofocus"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="country">Kraj</label> <input
+                        id="country" class="form-control" th:field="*{country}"
+                        required autofocus="autofocus"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="username">Pseudonim</label> <input
+                        id="username" class="form-control" th:field="*{username}"
+                        required autofocus="autofocus"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="password">Haslo</label> <input
+                        id="password" class="form-control" th:field="*{password}"
+                        required autofocus="autofocus"/>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Update</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

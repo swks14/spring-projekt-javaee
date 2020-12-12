@@ -35,14 +35,30 @@
 </nav>
 <br>
 <br>
-
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/myacc}">Panel zarządzania kontami</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/accdelete}">Usuwanie konta</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/accupdate}">Edytowanie konta</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/allacc}">Pokaz wszystkie konta</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/accfromapp}">Znajdz uzytkownikow aplikacji</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <div class="container">
-    <h1>Moje konto:</h1>
-    <!--    Witaj <span sec:authentication="principal.getUsername()"> User</span>-->
-    <span>Chcesz usunąć konto? <a href="/" th:href="@{/accdelete}">Kliknij tu</a></span><br>
-    <span>Chcesz edytowac konto? <a href="/" th:href="@{/accedit}">Kliknij tu</a></span><br>
-    <span>Pokaz wszystkie konta <a href="/" th:href="@{/allacc}">Kliknij tu</a></span>
-    <span>Znajdz uzytkownikow aplikacji <a href="/" th:href="@{/accfromapp}">Kliknij tu</a></span>
+    <h1>Witaj <span sec:authentication="principal.username"> User</span></h1>
 </div>
 </body>
 </html>
