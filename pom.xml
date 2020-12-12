@@ -15,9 +15,6 @@
 	<name>projekt</name>
 	<description>projekt</description>
 
-	<properties>
-		<java.version>11</java.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
