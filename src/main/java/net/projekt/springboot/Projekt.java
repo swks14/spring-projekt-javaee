@@ -42,15 +42,15 @@ public class Projekt {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//        try {
-//            br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Persons.csv"));
-//            while ((line = br.readLine()) != null) {
-//                String[] split = line.split(",", 7);
-//                userService.save(new UserRegistrationDto(split[1], split[2], split[3], split[4], split[5], split[6]));
-//            }
-//        } catch(IOException  e){
-//            e.printStackTrace();
-//        }
+        try {
+            br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Persons.csv"));
+            while ((line = br.readLine()) != null) {
+                String[] split = line.split(",", 7);
+                userService.save(new UserRegistrationDto(split[1], split[2], split[3], split[4], split[5], split[6]));
+            }
+        } catch(IOException  e){
+            e.printStackTrace();
+        }
 		try {
 			br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Domains.csv"));
 			while ((line = br.readLine()) != null) {
