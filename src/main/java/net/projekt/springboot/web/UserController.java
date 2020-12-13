@@ -8,6 +8,7 @@ import net.projekt.springboot.repository.UserRepository;
 import net.projekt.springboot.service.UserServiceImpl;
 import net.projekt.springboot.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,8 @@ public class UserController {
     private ApplicationRepository applicationRepository;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     private List<User> users = new ArrayList<>();
 
 
@@ -45,7 +48,7 @@ public class UserController {
 
     @GetMapping("/accupdate")
     public String applicationUpdate(@Valid Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserRegistrationDto());
         return "AccEdit";
     }
 
@@ -58,8 +61,7 @@ public class UserController {
                     user.setEmail(NewUser.getEmail());
                     user.setCountry(NewUser.getCountry());
                     user.setUsername(NewUser.getUsername());
-                    user.setPassword(NewUser.getPassword());
-                    user.setRoles(Arrays.asList(new Role("ROLE_USER")));
+                    user.setPassword(passwordEncoder.encode(NewUser.getPassword()));
                     userRepository.save(user);
                     return "redirect:/logout";
                 })
@@ -86,9 +88,9 @@ public class UserController {
 
     @RequestMapping(value = "/accfromapp", method = RequestMethod.POST)
     public String ShowUsersFromApp(@RequestParam Long id, @Valid Model model) {
-        model.addAttribute(userRepository.findAllByAppIdContains(applicationRepository.findById(id).orElseThrow(() -> new NotFoundException(id))));
+        model.addAttribute("users",userRepository.findAllByAppIdContains(applicationRepository.findById(id).orElseThrow(() -> new NotFoundException(id))));
 
-        return "redirect:/application";
+        return "AllAcc";
     }
 
     @PostMapping("/allacc/tocsv")
