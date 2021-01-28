@@ -31,7 +31,7 @@ public class Application {
     private String domain;
 
     @JsonManagedReference
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_apps",
             joinColumns = @JoinColumn(
@@ -45,14 +45,10 @@ public class Application {
         this.domain = domain;
     }
 
-
     @Override
     public String toString() {
-        return "Application{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", domain='" + domain + '\'' +
-                ", users=" + userId.size() +
-                '}';
+        return id +
+                "," + name +
+                "," + domain;
     }
 }

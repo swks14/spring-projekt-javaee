@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findAll();
 
+    List<Application> findAllByOrderByIdAsc();
+
     Optional<Application> findById(Long id);
 
     void deleteById(Long id);

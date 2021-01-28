@@ -4,6 +4,8 @@ import net.projekt.springboot.model.User;
 import net.projekt.springboot.web.dto.UserRegistrationDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService extends UserDetailsService{
-	User save(UserRegistrationDto userRegistrationDto);
+public interface UserService extends UserDetailsService {
+    User save(UserRegistrationDto userRegistrationDto);
+
+    User saveAdmin(UserRegistrationDto registrationDto);
 }

@@ -6,9 +6,12 @@ import net.projekt.springboot.repository.UserRepository;
 import net.projekt.springboot.service.UserServiceImpl;
 import net.projekt.springboot.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserRestController {
@@ -16,6 +19,8 @@ public class UserRestController {
     private UserRepository userRepository;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     public UserRestController(UserRepository userRepository) {
@@ -28,7 +33,7 @@ public class UserRestController {
     }
 
     @PostMapping("/api/users")
-    User addUser(@RequestBody UserRegistrationDto newUser) {
+    User addUser(@RequestBody @Valid UserRegistrationDto newUser) {
         return userService.save(newUser);
     }
 
@@ -38,8 +43,17 @@ public class UserRestController {
                 .orElseThrow(() -> new NotFoundException(id));
     }
 
+    @GetMapping("/api/users/poland")
+    List<User> FromPolandWithApps() {
+        return userRepository
+                .findAll()
+                .stream()
+                .filter(c -> c.getAppId().size() > 0 && c.getCountry().equals("Polska"))
+                .collect(Collectors.toList());
+    }
+
     @PutMapping("/api/users/{id}")
-    User updateUser(@RequestBody User newUser, @PathVariable Long id) {
+    User updateUser(@RequestBody UserRegistrationDto newUser, @PathVariable Long id) {
         return userRepository.findById(id)
                 .map(user -> {
                     user.setFirstName(newUser.getFirstName());
@@ -47,7 +61,7 @@ public class UserRestController {
                     user.setEmail(newUser.getEmail());
                     user.setCountry(newUser.getCountry());
                     user.setUsername(newUser.getUsername());
-                    user.setPassword(newUser.getPassword());
+                    user.setPassword(passwordEncoder.encode(newUser.getPassword()));
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new NotFoundException(id));

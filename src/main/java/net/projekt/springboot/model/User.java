@@ -18,7 +18,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 
 	@Id
@@ -43,6 +43,8 @@ public class User {
 	private String username;
 
 	@NotNull
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "haslo musi zawierac conajmniej 8 znaków" +
+			"w tym conajmniej jedna litera mała oraz duża i jedna cyfra ")
 	private String password;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -55,7 +57,7 @@ public class User {
 	private Collection<Role> roles;
 
 	@JsonBackReference
-	@ManyToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "userId", fetch = FetchType.EAGER)
 	private Set<Application> appId = new HashSet<>();
 
 	public User(String firstName, String lastName, String email, String country, String password, String username, Collection<Role> roles) {
@@ -70,14 +72,12 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", firstName='" + firstName + '\'' +
-				", lastName='" + lastName + '\'' +
-				", email='" + email + '\'' +
-				", country='" + country + '\'' +
-				", username='" + username + '\'' +
-				", apps=" + appId.size() +
-				'}';
+		return id +
+				"," + firstName +
+				"," + lastName +
+				"," + email +
+				"," + country +
+				"," + username;
+
 	}
 }

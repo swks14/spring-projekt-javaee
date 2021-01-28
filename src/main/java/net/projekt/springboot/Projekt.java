@@ -1,5 +1,6 @@
 package net.projekt.springboot;
 
+import net.projekt.springboot.Exceptions.NotFoundException;
 import net.projekt.springboot.model.Application;
 import net.projekt.springboot.repository.ApplicationRepository;
 import net.projekt.springboot.repository.UserRepository;
@@ -28,40 +29,46 @@ public class Projekt {
 		SpringApplication.run(Projekt.class, args);
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void Init() {
-		String line;
-		BufferedReader br;
-
-		try {
-			br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Users1.csv"));
-			while ((line = br.readLine()) != null) {
-				String[] split = line.split(",", 7);
-				userService.save(new UserRegistrationDto(split[1], split[2], split[3], split[4], split[5], split[6]));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        try {
-            br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Persons.csv"));
-            while ((line = br.readLine()) != null) {
-                String[] split = line.split(",", 7);
-                userService.save(new UserRegistrationDto(split[1], split[2], split[3], split[4], split[5], split[6]));
-            }
-        } catch(IOException  e){
-            e.printStackTrace();
-        }
-		try {
-			br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Domains.csv"));
-			while ((line = br.readLine()) != null) {
-				String[] split = line.split(",", 4);
-				Application application = new Application(split[1], split[2]);
-				applicationRepository.save(application);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
+//	@EventListener(ApplicationReadyEvent.class)
+//	public void Init() {
+//
+//		String line;
+//		BufferedReader br;
+//		Long counter= 1L;
+//		userService.saveAdmin(new UserRegistrationDto("admin","admin","admin@admin.com","Polska","123","admin"));
+//		try {
+//			br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Users1.csv"));
+//			while ((line = br.readLine()) != null) {
+//				String[] split = line.split(",", 7);
+//				userService.save(new UserRegistrationDto(split[1], split[2], split[3], split[4], split[5], split[6]));
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//        try {
+//            br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Persons.csv"));
+//            while ((line = br.readLine()) != null) {
+//                String[] split = line.split(",", 7);
+//                userService.save(new UserRegistrationDto(split[1], split[2], split[3], split[4], split[5], split[6]));
+//            }
+//        } catch(IOException  e){
+//            e.printStackTrace();
+//        }
+//		try {
+//			br = new BufferedReader(new FileReader("src/main/java/net/projekt/springboot/init/ProjectVIIIData/Domains.csv"));
+//			while ((line = br.readLine()) != null) {
+//				String[] split = line.split(",", 4);
+//				Application application = new Application(split[1], split[2]);
+//				Long finalCounter = counter;
+//				application.getUserId().add(userRepository.findById(counter)
+//						.orElseThrow(()-> new NotFoundException(finalCounter)));
+//				applicationRepository.save(application);
+//				counter++;
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
 
 }

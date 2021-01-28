@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByAppIdContains(Application application);
 
+    List<User> findAllByOrderByIdAsc();
+
 }

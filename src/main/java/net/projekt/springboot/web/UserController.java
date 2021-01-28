@@ -1,7 +1,6 @@
 package net.projekt.springboot.web;
 
 import net.projekt.springboot.Exceptions.NotFoundException;
-import net.projekt.springboot.model.Role;
 import net.projekt.springboot.model.User;
 import net.projekt.springboot.repository.ApplicationRepository;
 import net.projekt.springboot.repository.UserRepository;
@@ -14,11 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -47,8 +46,11 @@ public class UserController {
     }
 
     @GetMapping("/accupdate")
-    public String applicationUpdate(@Valid Model model) {
-        model.addAttribute("user", new UserRegistrationDto());
+    public String applicationUpdate(@Valid Model model, Principal principal) {
+        User userToUpdate = userRepository.findById(userRepository.findByEmail(principal.getName())
+                .getId()).orElseThrow(() -> new NotFoundException(userRepository.findByEmail(principal.getName())
+                .getId()));
+        model.addAttribute("user", userToUpdate);
         return "AccEdit";
     }
 
@@ -76,7 +78,7 @@ public class UserController {
 
     @GetMapping("/allacc")
     public String application(@Valid Model model) {
-        users = userRepository.findAll();
+        users = userRepository.findAllByOrderByIdAsc();
         model.addAttribute("users", users);
         return "AllAcc";
     }
@@ -95,11 +97,44 @@ public class UserController {
 
     @PostMapping("/allacc/tocsv")
     public String accountsToCsv() throws IOException {
-        FileWriter f = new FileWriter("users.csv");
+        String path = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "users.csv";
+        FileWriter f = new FileWriter(path);
         for (User user : users) {
             f.write("\n" + user.toString());
         }
         f.close();
         return "redirect:/allacc";
     }
+
+    @GetMapping("/accdelete/{id}")
+    public String accountDeleteId(@PathVariable Long id) {
+        User userToDelete = userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        userRepository.deleteById(userToDelete.getId());
+        return "redirect:/allacc";
+    }
+
+    @GetMapping("/accedit/{id}")
+    public String accountEditId(@PathVariable Long id, Model model) {
+        User userToFind = userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        model.addAttribute("user", userToFind);
+        return "AccIdEdit";
+    }
+
+    @PostMapping("/accedit/id")
+    public String updateUserId(@ModelAttribute("user") @Valid UserRegistrationDto NewUser, Principal principal) {
+        userRepository.findById(userRepository.findByEmail(principal.getName()).getId())
+                .map(user -> {
+                    user.setFirstName(NewUser.getFirstName());
+                    user.setLastName(NewUser.getLastName());
+                    user.setEmail(NewUser.getEmail());
+                    user.setCountry(NewUser.getCountry());
+                    user.setUsername(NewUser.getUsername());
+                    user.setPassword(passwordEncoder.encode(NewUser.getPassword()));
+                    userRepository.save(user);
+                    return "redirect:/allacc";
+                })
+                .orElseGet(() -> "redirect:/allacc");
+        return "redirect:/allacc";
+    }
+
 }

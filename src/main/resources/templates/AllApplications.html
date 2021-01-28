@@ -59,29 +59,52 @@
 
 <br>
 <br>
-<h1>Dodaj istniejącą aplikacje</h1>
-<form th:action="@{/application/addexisting}" method="post" th:object="${application}">
-    <div class="form-group">
-        <label class="control-label" for="id">id</label>
-        <input name="id" th:value="${application.id}"/>
-        <input type="submit" value="Add" class="btn btn-succes">
-    </div>
-    <table class="table">
+    <table sec:authorize="hasRole('ROLE_USER')" class="table">
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Domain</th>
+            <th>Add</th>
         </tr>
         <th:block th:each="app : ${applications}">
             <tr>
                 <td th:text="${app.id}"></td>
                 <td th:text="${app.name}"></td>
                 <td th:text="${app.domain}"></td>
+                <td>
+                    <a th:href="@{/application/add/{id}(id=${app.id})}" class="add">Add</a>
+                </td>
             </tr>
         </th:block>
     </table>
-    <form method="post" th:action="@{/apps/tocsv}">
-        <button type="submit">Zapisz w .csv</button>
-    </form>
+<table sec:authorize="hasRole('ROLE_ADMIN')" class="table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Domain</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        <th>Users</th>
+    </tr>
+    <th:block th:each="app : ${applications}">
+        <tr>
+            <td th:text="${app.id}"></td>
+            <td th:text="${app.name}"></td>
+            <td th:text="${app.domain}"></td>
+            <td>
+                <a th:href="@{/application/update/{id}(id=${app.id})}" class="edit">Edit</a>
+            </td>
+            <td>
+                <a th:href="@{/application/delete/{id}(id=${app.id})}" class="edit">Delete</a>
+            </td>
+            <td>
+                <a th:href="@{/application/{id}/users(id=${app.id})}" class="edit">Users</a>
+            </td>
+        </tr>
+    </th:block>
+</table>
+<form method="post" th:action="@{/apps/tocsv}">
+    <button type="submit">Zapisz w .csv</button>
+</form>
 </body>
 </html>
